@@ -1,62 +1,109 @@
                                   HTTP1.1 vs HTTP2
 
-HTTP is a network delay sensitive protocol in the sense that if there is less network delay, then the page loads faster.
-HTTP2 is much faster and more reliable than HTTP1. HTTP1 loads a single request for every TCP connection, while HTTP2 avoids
-network delay by using multiplexing. 
-Header CompressionHeaders are sent on every request leading to a lot of duplicate data being sent uncompressed across the wire.
-Header compression is included by default in HTTP/2 using HPACK.Performance OptimizationProvides support for caching to deliver
-pages faster.Spriting, concatenating, inlining, domain sharding are some of the optimizations used as a workaround to the
-‘six connections per host’ rule.Removes the need for unnecessary optimization hacks.Protocol TypeText based protocol that is 
-in the readable form.It is a binary protocol (HTTP requests are sent in the form of 0s and 1s). Needs to be converted back from
-binary in order to read it.SecuritySSL is not required but recommended. Digest authentication used in HTTP1.1 is an improvement
-over HTTP1.0. HTTPS uses SSL/TLS for secure encrypted communication.Though security is still not mandatory, it is mostly encrypted 
-(though it is not enforced) since almost all clients require traffic to be encrypted. It also has some minimum standards, such as 
-minimum key size for encryption. TLS 1.2 etc..
 
-KEY FETAURES:
-HTTP1.1:
-It supports connection reuse i.e. for every TCP connection there could be multiple requests and responses, and pipelining where the
-client can request several resources from the server at once. However, pipelining was hard to implement due to issues such as
-head-of-line blocking and was not a feasible solution.
 
-HTTP2:
-Uses multiplexing, where over a single TCP connection resources to be delivered are interleaved and arrive at the client almost at
-the same time. It is done using streams which can be prioritized, can have dependencies and individual flow control. 
-It also provides a feature called server push that allows the server to send data that the client will need but has not
- yet requested.
+Introduction:
 
- STATUS CODE:
-HTTP1.1:
-Introduces a warning header field to carry additional information about the status of a message.
-Can define 24 status codes, error reporting is quicker and more efficient.
+The Hypertext Transfer Protocol (HTTP) is the foundation of data communication on the World Wide Web. Over the years, HTTP has evolved, with several versions 
+being released to enhance the efficiency and performance of web communication. Two prominent versions are HTTP/1.1 and HTTP/2.
+In this blog post, we will explore the significant differences between HTTP/1.1 and HTTP/2 and understand how the latter improves upon its predecessor.
 
-HTTP2:
-Underlying semantics of HTTP such as headers, status codes remains the same.
- 
-AUTHENTICATION MECHANISM:
-HTTP1.1:
-It is relatively secure since it uses digest authentication, NTLM authentication.
+HTTP/1.1: The Traditional Approach
 
-HTTP2:
-Security concerns from previous versions will continue to be seen in HTTP/2.
-However, it is better equipped to deal with them due to new TLS features like
- connection error of type Inadequate_Security.
+HTTP/1.1 has been the dominant protocol used for web communication since its standardization in 1997. While it has served the web well, 
+it does have certain limitations that became more pronounced as web pages and applications grew in complexity.
 
- CACHING:
- HTTP1.1:
- Expands on the caching support by using additional headers like cache-control,
-conditional headers like If-Match and by using entity tags.
+1. Connection Limitations: HTTP/1.1 follows a request/response model, where a new connection is established for each resource request.
+This connection is typically short-lived, leading to a high overhead due to the repetitive connection setup and teardown process.
 
-HTTP2:
-HTTP/2 does not change much in terms of caching. With the server push feature 
-if the client finds the resources are already present in the cache, it can cancel the pushed stream.
+2. Head-of-Line Blocking: In HTTP/1.1, resources are requested sequentially, and the responses are delivered in the same order. 
+If one resource takes longer to load, it can block the entire process, resulting in slower page rendering.
 
-WEB TRAFFIC:
-HTTP1.1:
-HTTP/1.1 provides faster delivery of web pages and reduces web traffic as compared to HTTP/1.0.
-However, TCP starts slowly and with domain sharding (resources can be downloaded simultaneously
-by using multiple domains), connection reuse and pipelining, there is an increased risk of network congestion.
+3. Compression and Encryption: While HTTP/1.1 supports compression and encryption, these operations are applied at the transport level,
+leading to redundant data transmission. This redundancy can impact performance and increase bandwidth requirements.
 
-HTTP2:
-HTTP/2 utilizes multiplexing and server push to effectively reduce the page load time by a greater margin along
-with being less sensitive to network delays.
+HTTP/2: The Enhanced Protocol
+
+HTTP/2 was standardized in 2015 as an improvement over HTTP/1.1. It addresses many of the limitations of its predecessor and introduces new features
+to optimize web communication.
+
+1. Multiplexing: One of the key enhancements in HTTP/2 is the introduction of multiplexing. It allows multiple requests and responses to be sent
+and received simultaneously over a single connection. This eliminates the need for establishing new connections for each resource,
+reducing latency and improving overall performance.
+
+2. Binary Protocol: Unlike HTTP/1.1, which uses plain text for communication, HTTP/2 employs a binary protocol. The binary framing enables more efficient 
+parsing and reduces the overhead associated with textual representations, resulting in faster and more compact transmission.
+
+3. Server Push: HTTP/2 introduces server push, where the server can proactively send resources to the client before they are requested.
+This feature helps in reducing latency and optimizing the loading of dependent resources, ultimately improving page load times.
+
+4. Header Compression: In HTTP/1.1, headers are sent with each request and response, resulting in unnecessary redundancy. HTTP/2 utilizes header compression techniques 
+to reduce the size of headers, resulting in lower bandwidth consumption and improved performance.
+
+5. Stream Prioritization: HTTP/2 allows for stream prioritization, where resources can be assigned dependencies and weights. This enables the client 
+and server to prioritize the delivery of critical resources, reducing the impact of head-of-line blocking and improving page rendering speed.
+
+Conclusion:
+
+HTTP/2 represents a significant advancement in web communication over its predecessor, HTTP/1.1. With features like multiplexing, binary framing, server push,
+header compression, and stream prioritization, HTTP/2 offers faster, more efficient, and optimized data transmission for modern web applications. 
+While HTTP/1.1 will continue to be supported for backward compatibility, adopting HTTP/2 brings notable benefits to both developers and end-users,
+leading to improved web performance and user experience.
+
+As the web continues to evolve, it is essential for developers and system administrators to understand the differences between HTTP/1.1
+and HTTP/2 and consider transitioning to HTTP/2 to leverage its performance optimizations and enhanced features.
+
+
+                                Write a blog about objects and its internal representation in Javascript
+
+Introduction:
+JavaScript, being one of the most popular programming languages, is widely used for both front-end and back-end development. 
+At its core, JavaScript relies heavily on objects, which are key-value pairs that allow developers to store and manipulate data.
+In this blog post, we'll delve into the internal representation of objects in JavaScript, understanding how they work 
+and how we can leverage their power in our applications.
+
+Understanding Objects in JavaScript:
+In JavaScript, objects are dynamic entities that can hold properties and methods. They serve as the building blocks for complex data structures,
+enabling us to organize and access data in a flexible manner. Objects can be created using the object literal notation or the constructor notation.
+
+Internal Representation: Properties and Prototypes
+When you create an object in JavaScript, it is represented internally as a collection of properties. Properties can be either data properties or accessor properties.
+
+1. Data Properties: Data properties store a value associated with a key. Each data property has four attributes: `[[Value]]`, `[[Writable]]`, `[[Enumerable]]`, 
+and `[[Configurable]]`.
+
+- `[[Value]]`: It holds the actual value of the property.
+- `[[Writable]]`: This attribute determines if the value can be changed.
+- `[[Enumerable]]`: It indicates whether the property can be iterated over in a `for...in` loop.
+- `[[Configurable]]`: This attribute controls whether the property's attributes can be modified or the property can be deleted.
+
+2. Accessor Properties: Accessor properties do not contain a value themselves but instead define a pair of functions known as getters and setters.
+
+- `[[Get]]`: The getter function retrieves the property's value.
+- `[[Set]]`: The setter function sets the property's value.
+
+In addition to properties, objects in JavaScript also have a prototype, which allows them to inherit properties and methods from another object. 
+The prototype is accessed using the `[[Prototype]]` internal property. When we access a property or method on an object,
+JavaScript searches for it first in the object itself and then in its prototype chain until it finds the desired property or reaches the end of the chain.
+
+Using Objects Effectively:
+Understanding the internal representation of objects in JavaScript can help us write more efficient and maintainable code. 
+Here are a few tips for using objects effectively:
+
+1. Object Composition: JavaScript's object-oriented nature allows us to compose complex objects by combining smaller, reusable objects.
+This promotes code reusability and maintainability.
+
+2. Property Descriptors: We can use the `Object.defineProperty()` method to define or modify property attributes. This allows us to control how properties behave, 
+such as making them read-only or non-enumerable.
+
+3. Prototypal Inheritance: Leveraging prototypes, we can create object hierarchies that enable code reuse and inheritance. 
+By extending objects using the prototype chain, we can add or override properties and methods as needed.
+
+4. JSON: JavaScript Object Notation (JSON) is a popular data interchange format. JavaScript objects can be easily serialized to JSON 
+using `JSON.stringify()` and parsed back using `JSON.parse()`. This enables seamless communication with APIs and storage of object data.
+
+Conclusion:
+Objects play a crucial role in JavaScript, serving as a fundamental data structure for storing and manipulating data. 
+Understanding the internal representation of objects, including properties and prototypes, empowers developers to write more efficient, 
+modular, and maintainable code. By harnessing the power of objects, JavaScript developers can build powerful applications and 
+take advantage of the language's flexibility and versatility.
